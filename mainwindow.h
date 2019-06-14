@@ -24,10 +24,17 @@ private:
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QList <QBluetoothDeviceInfo *> devices;
 
+    QLowEnergyController *m_control = nullptr;
+    QLowEnergyService    *m_service = nullptr;
+    QLowEnergyDescriptor m_notificationDesc;
+
 private slots:
     void on_pbFind_clicked();
     void addDevice(const QBluetoothDeviceInfo &info);
+
     void deviceScanFinished();
+    void serviceDiscovered(const QBluetoothUuid &gatt);
+    void serviceScanDone();
 
 };
 
