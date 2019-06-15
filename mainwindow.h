@@ -28,6 +28,13 @@ private:
     QLowEnergyService    *m_service = nullptr;
     QLowEnergyDescriptor m_notificationDesc;
 
+    bool m_foundUART = false;
+    QBluetoothUuid UART_uuid;
+    QLowEnergyCharacteristic Uart_rx;
+
+public slots:
+    void on_pbSend_clicked();
+
 private slots:
     void on_pbFind_clicked();
     void addDevice(const QBluetoothDeviceInfo &info);
@@ -35,6 +42,10 @@ private slots:
     void deviceScanFinished();
     void serviceDiscovered(const QBluetoothUuid &gatt);
     void serviceScanDone();
+
+    void serviceStateChanged(QLowEnergyService::ServiceState s);
+    void updateHeartRateValue(const QLowEnergyCharacteristic &c, const QByteArray &value);
+    void confirmedDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArray &value);
 
 };
 
