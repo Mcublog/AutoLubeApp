@@ -33,10 +33,14 @@ private:
     QLowEnergyCharacteristic Uart_rx;
 
 public slots:
-    void on_pbSend_clicked();
+
 
 private slots:
     void on_pbFind_clicked();
+    void on_pbStart_clicked();
+    void on_pbStop_clicked();
+    void on_pbClear_clicked();
+\
     void addDevice(const QBluetoothDeviceInfo &info);
 
     void deviceScanFinished();

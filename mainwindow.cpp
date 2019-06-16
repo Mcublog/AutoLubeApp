@@ -15,7 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered, this, &MainWindow::addDevice);
     connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::finished, this, &MainWindow::deviceScanFinished);
 
-    connect(ui->pbSend, SIGNAL(clicked()), this, SLOT(on_pbSend_clicked));
+
+    ui->pbStart->setEnabled(false);
+    ui->pbStop->setEnabled(false);
+
+    connect(ui->pbClear,    SIGNAL(clicked()), this, SLOT(on_pbClear_clicked));
+    connect(ui->pbStart,    SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
+    connect(ui->pbStop,     SIGNAL(clicked()), this, SLOT(on_pbStop_clicked));
 }
 
 MainWindow::~MainWindow()
@@ -28,8 +34,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_pbFind_clicked()
 {
     qDebug() << "on_pbFind_clicked()";
-    devices.clear();
-    m_foundUART = false;
     discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
 }
 
@@ -76,16 +80,14 @@ void MainWindow::serviceDiscovered(const QBluetoothUuid &gatt)
 {
     qDebug() << "serviceDiscovered()";
     qDebug() << gatt.toString();
-    if (gatt.toString() == "{6e400001-b5a3-f393-e0a9-e50e24dcca9e}")
-    {
+    if (gatt.toString() == "{6e400001-b5a3-f393-e0a9-e50e24dcca9e}") {
         qDebug() << "UART finded";
         m_foundUART = true;
         UART_uuid = gatt;
     }
 }
 
-void MainWindow::serviceScanDone()
-{
+void MainWindow::serviceScanDone() {
     qDebug() << "serviceScanDone()";
 
     // Delete old service if available
@@ -94,13 +96,11 @@ void MainWindow::serviceScanDone()
         m_service = nullptr;
     }
 
-    if (m_foundUART)
-    {
+    if (m_foundUART) {
         m_service = m_control->createServiceObject(UART_uuid, this);
     }
 
-    if (m_service)
-    {
+    if (m_service) {
         connect(m_service, &QLowEnergyService::stateChanged, this, &MainWindow::serviceStateChanged);
         connect(m_service, &QLowEnergyService::characteristicChanged, this, &MainWindow::updateHeartRateValue);
         connect(m_service, &QLowEnergyService::descriptorWritten, this, &MainWindow::confirmedDescriptorWrite);
@@ -110,8 +110,7 @@ void MainWindow::serviceScanDone()
 
 // Service functions
 //! [Find HRM characteristic]
-void MainWindow::serviceStateChanged(QLowEnergyService::ServiceState s)
-{
+void MainWindow::serviceStateChanged(QLowEnergyService::ServiceState s) {
     switch (s) {
     case QLowEnergyService::DiscoveringServices:
         qDebug() << "Discovering services...";
@@ -124,6 +123,10 @@ void MainWindow::serviceStateChanged(QLowEnergyService::ServiceState s)
         if (!Uart_rx.isValid()) {
             qDebug() << "Uart RX not found.";
             break;
+        }
+        else {
+            ui->pbStart->setEnabled(true);
+            ui->pbStop->setEnabled(true);
         }
 //        m_notificationDesc = hrChar.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
 //        if (m_notificationDesc.isValid())
@@ -141,8 +144,7 @@ void MainWindow::serviceStateChanged(QLowEnergyService::ServiceState s)
 //! [Find HRM characteristic]
 
 //! [Reading value]
-void MainWindow::updateHeartRateValue(const QLowEnergyCharacteristic &c, const QByteArray &value)
-{
+void MainWindow::updateHeartRateValue(const QLowEnergyCharacteristic &c, const QByteArray &value) {
     // ignore any other characteristic change -> shouldn't really happen though
     if (c.uuid() != QBluetoothUuid(QBluetoothUuid::HeartRateMeasurement))
         return;
@@ -150,8 +152,7 @@ void MainWindow::updateHeartRateValue(const QLowEnergyCharacteristic &c, const Q
     //addMeasurement(hrvalue);
 }
 
-void MainWindow::confirmedDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArray &value)
-{
+void MainWindow::confirmedDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArray &value) {
     if (d.isValid() && d == m_notificationDesc && value == QByteArray::fromHex("0000")) {
         //disabled notifications -> assume disconnect intent
         m_control->disconnectFromDevice();
@@ -160,9 +161,28 @@ void MainWindow::confirmedDescriptorWrite(const QLowEnergyDescriptor &d, const Q
     }
 }
 
-void MainWindow::on_pbSend_clicked()
-{
+void MainWindow::on_pbStart_clicked() {
     QByteArray data = "3";
     m_service->writeCharacteristic(Uart_rx, data, QLowEnergyService::WriteWithoutResponse);
+}
+
+void MainWindow::on_pbStop_clicked() {
+    QByteArray data = "1";
+    m_service->writeCharacteristic(Uart_rx, data, QLowEnergyService::WriteWithoutResponse);
+}
+
+void MainWindow::on_pbClear_clicked() {
+    ui->teLog->clear();
+
+    if (m_control)
+        m_control->disconnectFromDevice();
+
+    delete m_service;
+    m_service = nullptr;
+
+    devices.clear();
+    m_foundUART = false;
+    ui->pbStart->setEnabled(false);
+    ui->pbStop->setEnabled(false);
 }
 
