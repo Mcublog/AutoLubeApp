@@ -40,7 +40,7 @@ private slots:
     void on_pbStart_clicked();
     void on_pbStop_clicked();
     void on_pbClear_clicked();
-\
+
     void addDevice(const QBluetoothDeviceInfo &info);
 
     void deviceScanFinished();
