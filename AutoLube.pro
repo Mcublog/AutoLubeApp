@@ -26,13 +26,18 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    bledevice.cpp \
+    scanpage.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    bledevice.h \
+    scanpage.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    scanpage.ui
 
 CONFIG += mobility
 MOBILITY = 

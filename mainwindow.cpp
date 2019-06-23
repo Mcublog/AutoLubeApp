@@ -48,8 +48,8 @@ void MainWindow::addDevice(const QBluetoothDeviceInfo &info)
 
         devices.append(&d);
 
-        ui->teLog->append("Name: " + d.name());
-        ui->teLog->append("rssi: " + QString::number(d.rssi()));
+        ui->lwDevList->addItem("Name: " + d.name());
+        //ui->teLog->append("rssi: " + QString::number(d.rssi()));
 
         m_control = QLowEnergyController::createCentral(d, this);
         m_control->setRemoteAddressType(QLowEnergyController::PublicAddress);
@@ -172,7 +172,7 @@ void MainWindow::on_pbStop_clicked() {
 }
 
 void MainWindow::on_pbClear_clicked() {
-    ui->teLog->clear();
+    ui->lwDevList->clear();
 
     if (m_control)
         m_control->disconnectFromDevice();
