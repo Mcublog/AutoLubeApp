@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include <QLowEnergyService>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,10 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     bled = new BleDevice();
 
-    QObject::connect(bled, SIGNAL(deviceScanFinished()), this,SLOT(on_deviceScanFinished()));
+    connect(bled, SIGNAL(deviceScanFinished()), this, SLOT(on_deviceScanFinished()));
 
     connect(ui->pbStart,    SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
     connect(ui->pbStop,     SIGNAL(clicked()), this, SLOT(on_pbStop_clicked));
+    connect(ui->lwDevList,  SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(on_lwDevList_clicked(QListWidgetItem*)), Qt::UniqueConnection);
 }
 
 MainWindow::~MainWindow()
@@ -52,3 +54,19 @@ void MainWindow::on_pbStop_clicked()
     //m_service->writeCharacteristic(Uart_rx, data, QLowEnergyService::WriteWithoutResponse);
 }
 
+void MainWindow::on_lwDevList_clicked(QListWidgetItem* listWidgetItem)
+{
+    qDebug() << "on_lwDevList_dclicked: " << listWidgetItem->text();
+    bled->setConnect(listWidgetItem->text());
+    connect(bled, SIGNAL(deviceDisconnected()), this, SLOT(on_device_disconnect()));
+}
+
+void MainWindow::on_device_disconnect()
+{
+    qDebug() << "on_device_disconnect";
+
+    ui->pbStart->setEnabled(false);
+    ui->pbStop->setEnabled(false);
+
+   // ui->lwDevList->clear();
+}

@@ -18,15 +18,18 @@ public:
     void startScanning();
     QStringList getDeviveList();
     void setDeviceDisconnect();
+    void setConnect(QString device_name);
 
 signals:
     void deviceScanFinished();
     void deviceDisconnected();
+    void deviceConnected();
 
-private slots:
+public slots:
     void addDevice(const QBluetoothDeviceInfo &info);
     void serviceScanDone();
     void serviceDiscovered(const QBluetoothUuid &gatt);
+    void connectionDone();
 
     void serviceStateChanged(QLowEnergyService::ServiceState s);
     void updateHeartRateValue(const QLowEnergyCharacteristic &c, const QByteArray &value);

@@ -14,6 +14,9 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
@@ -56,7 +59,11 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QListWidget" name="lwDevList"/>
+      <widget class="QListWidget" name="lwDevList">
+       <property name="styleSheet">
+        <string notr="true">*{font: 24pt &quot;Courier&quot;;}</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

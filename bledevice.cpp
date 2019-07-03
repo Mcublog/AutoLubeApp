@@ -20,34 +20,40 @@ BleDevice::BleDevice()
 
 BleDevice::~BleDevice()
 {
-    m_control->disconnectFromDevice();
+    if (m_control)
+        m_control->disconnectFromDevice();
     delete m_control;
     delete m_service;
     delete discoveryAgent;
 }
 
+/*-----------------------------------------------------------
+/Fill a list of device available to connect.
+/param:
+/return:
+-----------------------------------------------------------*/
 void BleDevice::startScanning()
 {
-    if (m_control)
-        m_control->disconnectFromDevice();
-        delete m_control;
-        m_control = nullptr;
-    devices.clear();
+    setDeviceDisconnect();
     discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
 }
 
+/*-----------------------------------------------------------
+/Add device to list
+/param:
+/return:
+-----------------------------------------------------------*/
 void BleDevice::addDevice(const QBluetoothDeviceInfo &info)
 {
     qDebug() << "addDevice()";
     if (info.coreConfigurations() & QBluetoothDeviceInfo::LowEnergyCoreConfiguration)
     {
-        auto d = info;
-        qDebug() << d.name();
-        qDebug() << "rssi: " + QString::number(d.rssi());
-        qDebug() << d.serviceUuids();
+        devices.append(info);
+        qDebug() << devices.last().name();
+        qDebug() << "rssi: "<< devices.last().rssi() << " " << devices.last().address().toString();
+        qDebug() << devices.last().serviceUuids();
 
-        devices.append(d);
-        m_control = QLowEnergyController::createCentral(d);
+        m_control = QLowEnergyController::createCentral(devices.last());
         m_control->setRemoteAddressType(QLowEnergyController::PublicAddress);
 
         connect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
@@ -58,39 +64,51 @@ void BleDevice::addDevice(const QBluetoothDeviceInfo &info)
             m_control->discoverServices();
         });
 
-        connect(m_control, &QLowEnergyController::disconnected, this,
-                [this]()
-        {
-            qDebug() << "LowEnergy controller disconnected";
-            emit BleDevice::deviceDisconnected();
-        });
+        connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
 
         // Connect
         m_control->connectToDevice();
     }
 }
 
+/*-----------------------------------------------------------
+/Add device to list
+/param:
+/return:
+-----------------------------------------------------------*/
 QStringList BleDevice::getDeviveList()
 {
     QStringList device_names;
-    foreach (QBluetoothDeviceInfo device, devices)
+    for (QBluetoothDeviceInfo device: devices)
     {
-        device_names.append(device.name());
+        device_names.append(device.name() + " " + device.address().toString());
     }
     return device_names;
 }
 
+/*-----------------------------------------------------------
+/Add device to list
+/param:
+/return:
+-----------------------------------------------------------*/
 void BleDevice::setDeviceDisconnect()
 {
     if (m_control)
     {
         m_control->disconnectFromDevice();
-        delete m_control;
-        m_control = nullptr;
-        devices.clear();
     }
+    delete m_control;
+    m_control = nullptr;
+    devices.clear();
+    m_foundUART = false;
+    emit BleDevice::deviceDisconnected();
 }
 
+/*-----------------------------------------------------------
+/New service discovered
+/param: link to UUID service
+/return:
+-----------------------------------------------------------*/
 void BleDevice::serviceDiscovered(const QBluetoothUuid &gatt)
 {
     qDebug() << "serviceDiscovered()";
@@ -103,34 +121,102 @@ void BleDevice::serviceDiscovered(const QBluetoothUuid &gatt)
     }
 }
 
+/*-----------------------------------------------------------
+/All service scanned and now we can to disxonnect from the device
+/param:
+/return:
+-----------------------------------------------------------*/
 void BleDevice::serviceScanDone()
 {
     qDebug() << "serviceScanDone()";
 
+    if (!m_foundUART)
+    {
+        devices.pop_back();
+    }
+
+    if (m_control)
+    {
+        m_control->disconnectFromDevice();
+    }
+    delete m_control;
+    m_control = nullptr;
+    m_foundUART = false;
+    emit BleDevice::deviceScanFinished();
+}
+
+void BleDevice::connectionDone()
+{
+    qDebug() << "connectionDone()";
     // Delete old service if available
-    if (m_service) {
+    if (m_service)
+    {
         delete m_service;
         m_service = nullptr;
     }
 
-    if (m_foundUART) {
+    if (m_foundUART)
+    {
         m_service = m_control->createServiceObject(UART_uuid);
     }
 
-    if (m_service) {
+    if (m_service)
+    {
         connect(m_service, &QLowEnergyService::stateChanged,          this, &BleDevice::serviceStateChanged);
         connect(m_service, &QLowEnergyService::characteristicChanged, this, &BleDevice::updateHeartRateValue);
         connect(m_service, &QLowEnergyService::descriptorWritten,     this, &BleDevice::confirmedDescriptorWrite);
         m_service->discoverDetails();
+        emit BleDevice::deviceConnected();
     }
+}
+
+void BleDevice::setConnect(QString device_name)
+{
+    bool device_find = false;
+    int dev_idx = 0;
+    for (int i = 0; i < devices.count(); i++)
+    {
+        if (devices[i].name() + " " + devices[i].address().toString() == device_name)
+        {
+            qDebug() << "Device find at: " << i;
+            device_find = true;
+            dev_idx = i;
+            break;
+        }
+    }
+
+    if (device_find)
+    {
+        m_control = QLowEnergyController::createCentral(devices.at(dev_idx));
+        m_control->setRemoteAddressType(QLowEnergyController::PublicAddress);
+
+        connect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
+        connect(m_control, &QLowEnergyController::discoveryFinished, this, &BleDevice::connectionDone);
+
+        connect(m_control, &QLowEnergyController::connected, this, [this]()
+        {
+            qDebug() << "Controller connected. Search services...";
+            m_control->discoverServices();
+        });
+
+        connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
+
+        // Connect
+        m_control->connectToDevice();
+
+    }
+
 }
 
 void BleDevice::serviceStateChanged(QLowEnergyService::ServiceState s)
 {
+    qDebug() << s;
     switch (s) {
     case QLowEnergyService::DiscoveringServices:
+    {
         qDebug() << "Discovering services...";
-        break;
+    }break;
+
     case QLowEnergyService::ServiceDiscovered:
     {
         qDebug() << "Service discovered";
@@ -144,14 +230,17 @@ void BleDevice::serviceStateChanged(QLowEnergyService::ServiceState s)
         else
         {
             qDebug() << "Uart RX found.";
+            QByteArray data = "3";
+            m_service->writeCharacteristic(Uart_rx, data, QLowEnergyService::WriteWithoutResponse);
             emit deviceScanFinished();
         }
 //        m_notificationDesc = hrChar.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
 //        if (m_notificationDesc.isValid())
 //            m_service->writeDescriptor(m_notificationDesc, QByteArray::fromHex("0100"));
 
-        break;
-    }
+
+    }break;
+
     default:
         //nothing for now
         break;
