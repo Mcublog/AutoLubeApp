@@ -4,6 +4,8 @@
 #include <QLowEnergyService>
 #include <QTimer>
 
+#include "scanpage.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -15,11 +17,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     bled = new BleDevice();
 
-    connect(bled, SIGNAL(deviceScanFinished()), this, SLOT(on_deviceScanFinished()));
-
     connect(ui->pbStart,    SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
     connect(ui->pbStop,     SIGNAL(clicked()), this, SLOT(on_pbStop_clicked));
     connect(ui->lwDevList,  SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(on_lwDevList_clicked(QListWidgetItem*)), Qt::UniqueConnection);
+
 }
 
 MainWindow::~MainWindow()
@@ -32,6 +33,8 @@ void MainWindow::on_pbFind_clicked()
 {
     qDebug() << "on_pbFind_clicked()";
     ui->lwDevList->clear();
+    ui->pbFind->setEnabled(false);
+    connect(bled, SIGNAL(deviceScanFinished()), this, SLOT(on_deviceScanFinished()));
     bled->startScanning();
 }
 
@@ -39,7 +42,9 @@ void MainWindow::on_deviceScanFinished()
 {
     qDebug() << "deviceScanFinished()";
     QStringList devlist = bled->getDeviveList();
+    ui->lwDevList->clear();
     ui->lwDevList->addItems(devlist);
+    ui->pbFind->setEnabled(true);
 }
 
 void MainWindow::on_pbStart_clicked()
@@ -58,6 +63,7 @@ void MainWindow::on_lwDevList_clicked(QListWidgetItem* listWidgetItem)
 {
     qDebug() << "on_lwDevList_dclicked: " << listWidgetItem->text();
     bled->setConnect(listWidgetItem->text());
+
     connect(bled, SIGNAL(deviceDisconnected()), this, SLOT(on_device_disconnect()));
 }
 
@@ -67,6 +73,7 @@ void MainWindow::on_device_disconnect()
 
     ui->pbStart->setEnabled(false);
     ui->pbStop->setEnabled(false);
+    ui->pbFind->setEnabled(true);
 
-   // ui->lwDevList->clear();
+    ui->lwDevList->clear();
 }

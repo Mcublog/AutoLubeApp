@@ -46,6 +46,9 @@ private:
     bool m_foundUART = false;
     QBluetoothUuid UART_uuid;
     QLowEnergyCharacteristic Uart_rx;
+
+    bool connection = false;
+
 };
 
 #endif // BLEDEVICE_H
