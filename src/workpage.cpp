@@ -39,8 +39,10 @@ void WorkPage::on_device_connected()
 
 void WorkPage::on_device_disconnect()
 {
-    qDebug() << "on_device_disconnect()";
-    ui->pbDisconnect->setEnabled(true);
+    qDebug() << "WorkPage:: on_device_disconnect()";
+    ui->pbStart->setEnabled(false);
+    ui->pbStop->setEnabled(false);
+
     emit WorkPage::disconnected();
 
 }
@@ -49,7 +51,7 @@ void WorkPage::on_pbDisconnect_clicked()
 {
     ui->pbStart->setEnabled(false);
     ui->pbStop->setEnabled(false);
-    ui->pbDisconnect->setEnabled(false);
+//    ui->pbDisconnect->setEnabled(false);
 
     bled->setDeviceDisconnect();
 }

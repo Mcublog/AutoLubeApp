@@ -38,6 +38,8 @@ public slots:
     void updateHeartRateValue(const QLowEnergyCharacteristic &c, const QByteArray &value);
     void confirmedDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArray &value);
 
+    void on_canceled();
+
 private:
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QList <QBluetoothDeviceInfo> devices;

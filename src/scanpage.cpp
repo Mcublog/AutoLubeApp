@@ -34,8 +34,15 @@ void ScanPage::on_deviceScanFinished()
 {
     qDebug() << "deviceScanFinished()";
     QStringList devlist = bled->getDeviveList();
-    ui->lwDevList->clear();
-    ui->lwDevList->addItems(devlist);
+    if (devlist.count()) //device found
+    {
+        ui->lwDevList->clear();
+        ui->lwDevList->addItems(devlist);
+    }
+    else //nof found
+    {
+        bled->setDeviceDisconnect();
+    }
     ui->pbFind->setEnabled(true);
 }
 

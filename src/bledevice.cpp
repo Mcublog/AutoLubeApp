@@ -8,7 +8,7 @@ BleDevice::BleDevice()
 
     connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered, this, &BleDevice::addDevice);
     connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::finished,         this, &BleDevice::serviceScanDone);
-    //connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::canceled,         this, &BleDevice::serviceScanDone);
+    connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::canceled,         this, &BleDevice::on_canceled);
 
     connection = false;
 }
@@ -32,10 +32,10 @@ void BleDevice::startScanning()
     connection = false;
     devices.clear();
     setDeviceDisconnect();
-    if (discoveryAgent->isActive())
-    {
+//    if (discoveryAgent->isActive())
+//    {
         discoveryAgent->stop();
-    }
+    //}
 
     discoveryAgent->setLowEnergyDiscoveryTimeout(5000);
     discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
@@ -115,7 +115,7 @@ void BleDevice::setDeviceDisconnect()
 
     if (m_control != nullptr)
     {
-        m_control->disconnectFromDevice();
+        //m_control->disconnectFromDevice();
     }
     delete m_control;
     m_control = nullptr;
@@ -148,8 +148,10 @@ void BleDevice::serviceDiscovered(const QBluetoothUuid &gatt)
 void BleDevice::serviceScanDone()
 {
     qDebug() << "serviceScanDone()";
+    for (auto dev: devices) qDebug() << dev.name();
 
     QObject* obj = sender();
+
     // On discoveryAgent timeout
     if (obj == discoveryAgent && devices.count() != 0)
     {
@@ -161,10 +163,10 @@ void BleDevice::serviceScanDone()
         devices.pop_back();
     }
 
-    if (m_control != nullptr)
-    {
-        m_control->disconnectFromDevice();
-    }
+//    if (m_control != nullptr)
+//    {
+//        m_control->disconnectFromDevice();
+//    }
     connection =false;
     delete m_control;
     m_control = nullptr;
@@ -221,14 +223,21 @@ void BleDevice::setConnect(QString device_name)
 
         connect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
         connect(m_control, &QLowEnergyController::discoveryFinished, this, &BleDevice::connectionDone);
-
         connect(m_control, &QLowEnergyController::connected, this, [this]()
         {
             qDebug() << "Controller connected. Search services...";
             m_control->discoverServices();
         });
 
+        connect(m_control, QOverload<QLowEnergyController::Error>::of(&QLowEnergyController::error),
+            [=](QLowEnergyController::Error newError)
+        {
+            qDebug() << "QLowEnergyController::Error implementation " << newError;
+        });
+
         connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
+        connect(m_control, &QLowEnergyController::connectionUpdated, this, &BleDevice::setDeviceDisconnect);
+
 
         // Connect
         m_control->connectToDevice();
@@ -308,4 +317,10 @@ void BleDevice::write_service(QByteArray &data)
     {
         m_service->writeCharacteristic(Uart_rx, data, QLowEnergyService::WriteWithoutResponse);
     }
+}
+
+void BleDevice::on_canceled()
+{
+    qDebug() << "on_canceled()";
+    setDeviceDisconnect();
 }
