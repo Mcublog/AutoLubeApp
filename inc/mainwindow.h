@@ -20,9 +20,14 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;   
+    Ui::MainWindow *ui;
+
     ScanPage *scan_page;
     WorkPage *work_page;
+
+private slots:
+    void on_scan_page_connection(QString *dev_name);
+    void on_work_page_disconnected();
 };
 
 #endif // MAINWINDOW_H

@@ -42,15 +42,17 @@ void ScanPage::on_deviceScanFinished()
 void ScanPage::on_lwDevList_clicked(QListWidgetItem* listWidgetItem)
 {
     qDebug() << "on_lwDevList_dclicked: " << listWidgetItem->text();
-    bled->setConnect(listWidgetItem->text());
+    QString dev_name = listWidgetItem->text();
+    on_device_disconnect();
+    emit connection(&dev_name);
 
-    connect(bled, SIGNAL(deviceDisconnected()), this, SLOT(on_device_disconnect()));
+//    bled->setConnect();
+//    connect(bled, SIGNAL(deviceDisconnected()), this, SLOT(on_device_disconnect()));
 }
 
 void ScanPage::on_device_disconnect()
 {
     qDebug() << "on_device_disconnect";
     ui->pbFind->setEnabled(true);
-
     ui->lwDevList->clear();
 }

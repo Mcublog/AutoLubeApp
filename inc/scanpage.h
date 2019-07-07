@@ -18,10 +18,12 @@ public:
     explicit ScanPage(QWidget *parent = nullptr);
     ~ScanPage();
 
+signals:
+    void connection(QString *name);
+
 private:
     Ui::ScanPage *ui;
     BleDevice *bled;
-    bool DoubleClicked;
 
 private slots:
     void on_pbFind_clicked();

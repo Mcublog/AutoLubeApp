@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "bledevice.h"
+
 namespace Ui {
 class WorkPage;
 }
@@ -15,10 +17,17 @@ public:
     explicit WorkPage(QWidget *parent = nullptr);
     ~WorkPage();
 
+    void set_connection(QString *string);
+
 private:
     Ui::WorkPage *ui;
+    BleDevice *bled;
+
+signals:
+    void disconnected();
 
 private slots:
+    void on_pbDisconnect_clicked();
     void on_pbStart_clicked();
     void on_pbStop_clicked();
 };

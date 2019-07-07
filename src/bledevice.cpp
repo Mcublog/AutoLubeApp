@@ -254,7 +254,11 @@ void BleDevice::serviceStateChanged(QLowEnergyService::ServiceState s)
 //            m_service->writeDescriptor(m_notificationDesc, QByteArray::fromHex("0100"));
         }break;
 
-        default: break;
+        default:
+        {
+            setDeviceDisconnect();
+        }
+        break;
     }
 
 }

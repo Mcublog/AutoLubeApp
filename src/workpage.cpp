@@ -7,16 +7,26 @@ WorkPage::WorkPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    bled = new BleDevice();
+
     ui->pbStart->setEnabled(false);
     ui->pbStop->setEnabled(false);
 
-    connect(ui->pbStart,    SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
-    connect(ui->pbStop,     SIGNAL(clicked()), this, SLOT(on_pbStop_clicked));
+    connect(ui->pbDisconnect,   SIGNAL(clicked()), this, SLOT(on_pbDisconnect_clicked()));
+    connect(ui->pbStart,        SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
+    connect(ui->pbStop,         SIGNAL(clicked()), this, SLOT(on_pbStop_clicked));
 }
 
 WorkPage::~WorkPage()
 {
+    delete bled;
     delete ui;
+}
+
+void WorkPage::on_pbDisconnect_clicked()
+{
+    bled->setDeviceDisconnect();
+    emit WorkPage::disconnected();
 }
 
 void WorkPage::on_pbStart_clicked()
