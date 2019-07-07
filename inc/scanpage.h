@@ -19,7 +19,7 @@ public:
     ~ScanPage();
 
 signals:
-    void connection(QString *name);
+    void connection(QString *name, QList <QBluetoothDeviceInfo> &devlist);
 
 private:
     Ui::ScanPage *ui;

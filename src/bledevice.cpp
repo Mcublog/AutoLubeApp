@@ -11,7 +11,6 @@ BleDevice::BleDevice()
     //connect(discoveryAgent, &QBluetoothDeviceDiscoveryAgent::canceled,         this, &BleDevice::serviceScanDone);
 
     connection = false;
-
 }
 
 BleDevice::~BleDevice()
@@ -95,16 +94,31 @@ QStringList BleDevice::getDeviveList()
 /param:
 /return:
 -----------------------------------------------------------*/
+QStringList BleDevice::getDeviveList(QList <QBluetoothDeviceInfo> &devlist)
+{
+    devlist = devices;
+    return getDeviveList();
+}
+
+/*-----------------------------------------------------------
+/Add device to list
+/param:
+/return:
+-----------------------------------------------------------*/
 void BleDevice::setDeviceDisconnect()
 {
-    connection = false;
+    if (connection)
+    {
+        connection = false;
+        devices.clear();
+    }
+
     if (m_control != nullptr)
     {
         m_control->disconnectFromDevice();
     }
     delete m_control;
     m_control = nullptr;
-    //devices.clear();
     m_foundUART = false;
     emit BleDevice::deviceDisconnected();
 }
@@ -222,6 +236,12 @@ void BleDevice::setConnect(QString device_name)
     }
 }
 
+void BleDevice::setConnect(QString device_name, QList<QBluetoothDeviceInfo> &devlist)
+{
+    devices = devlist;
+    setConnect(device_name);
+}
+
 void BleDevice::serviceStateChanged(QLowEnergyService::ServiceState s)
 {
     qDebug() << s;
@@ -256,7 +276,7 @@ void BleDevice::serviceStateChanged(QLowEnergyService::ServiceState s)
 
         default:
         {
-            setDeviceDisconnect();
+            //setDeviceDisconnect();
         }
         break;
     }
@@ -279,5 +299,13 @@ void BleDevice::confirmedDescriptorWrite(const QLowEnergyDescriptor &d, const QB
         m_control->disconnectFromDevice();
         delete m_service;
         m_service = nullptr;
+    }
+}
+
+void BleDevice::write_service(QByteArray &data)
+{
+    if (connection)
+    {
+        m_service->writeCharacteristic(Uart_rx, data, QLowEnergyService::WriteWithoutResponse);
     }
 }

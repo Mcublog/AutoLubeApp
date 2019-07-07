@@ -17,8 +17,11 @@ public:
 
     void startScanning();
     QStringList getDeviveList();
+    QStringList getDeviveList(QList <QBluetoothDeviceInfo> &devlist);
     void setDeviceDisconnect();
     void setConnect(QString device_name);
+    void setConnect(QString device_name, QList <QBluetoothDeviceInfo> &devlist);
+    void write_service(QByteArray &data);
 
 signals:
     void deviceScanFinished();
@@ -48,7 +51,6 @@ private:
     QLowEnergyCharacteristic Uart_rx;
 
     bool connection = false;
-
 };
 
 #endif // BLEDEVICE_H

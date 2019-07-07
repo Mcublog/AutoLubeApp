@@ -17,7 +17,7 @@ public:
     explicit WorkPage(QWidget *parent = nullptr);
     ~WorkPage();
 
-    void set_connection(QString *string);
+    void set_connection(QString *dev_name, QList <QBluetoothDeviceInfo> &devlist);
 
 private:
     Ui::WorkPage *ui;
@@ -30,6 +30,8 @@ private slots:
     void on_pbDisconnect_clicked();
     void on_pbStart_clicked();
     void on_pbStop_clicked();
+    void on_device_connected();
+    void on_device_disconnect();
 };
 
 #endif // WORKPAGE_H

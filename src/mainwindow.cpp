@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     scan_page->setVisible(true);
     work_page->setVisible(false);
 
-    connect(scan_page, SIGNAL(connection(QString *)),
-            this,      SLOT(on_scan_page_connection(QString *)),
+    connect(scan_page, SIGNAL(connection(QString *, QList <QBluetoothDeviceInfo> &)),
+            this,      SLOT(on_scan_page_connection(QString *,  QList <QBluetoothDeviceInfo> &)),
             Qt::ConnectionType::UniqueConnection);
 
     connect(work_page, SIGNAL(disconnected()),
@@ -30,11 +30,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_scan_page_connection(QString *dev_name)
+void MainWindow::on_scan_page_connection(QString *dev_name, QList <QBluetoothDeviceInfo> &devlist)
 {
     qDebug() << "on_scan_page_connection(QString *) " << *dev_name;
     scan_page->setVisible(false);
     work_page->setVisible(true);
+    work_page->set_connection(dev_name, devlist);
 
 }
 

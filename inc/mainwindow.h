@@ -26,7 +26,7 @@ private:
     WorkPage *work_page;
 
 private slots:
-    void on_scan_page_connection(QString *dev_name);
+    void on_scan_page_connection(QString *dev_name, QList <QBluetoothDeviceInfo> &);
     void on_work_page_disconnected();
 };
 
