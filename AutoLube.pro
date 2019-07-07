@@ -25,22 +25,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    bledevice.cpp \
-    scanpage.cpp \
-    workpage.cpp
+    src/bledevice.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/scanpage.cpp \
+    src/workpage.cpp
 
 HEADERS += \
-        mainwindow.h \
-    bledevice.h \
-    scanpage.h \
-    workpage.h
+    inc/bledevice.h \
+    inc/mainwindow.h \
+    inc/scanpage.h \
+    inc/workpage.h
 
 FORMS += \
-        mainwindow.ui \
-    scanpage.ui \
-    workpage.ui
+    forms/mainwindow.ui \
+    forms/scanpage.ui \
+    forms/workpage.ui
 
 CONFIG += mobility
 MOBILITY = 
