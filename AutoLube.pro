@@ -28,16 +28,19 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     bledevice.cpp \
-    scanpage.cpp
+    scanpage.cpp \
+    workpage.cpp
 
 HEADERS += \
         mainwindow.h \
     bledevice.h \
-    scanpage.h
+    scanpage.h \
+    workpage.h
 
 FORMS += \
         mainwindow.ui \
-    scanpage.ui
+    scanpage.ui \
+    workpage.ui
 
 CONFIG += mobility
 MOBILITY = 

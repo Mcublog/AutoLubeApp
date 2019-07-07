@@ -4,16 +4,8 @@
 #include <QMainWindow>
 #include <QListWidget>
 
-//--- Bluetooth ---
-#include <QBluetoothServiceDiscoveryAgent>
-#include <QBluetoothDeviceDiscoveryAgent>
-#include <QLowEnergyController>
-#include <QBluetoothServiceInfo>
-//---------------
-
-
-
-#include "bledevice.h"
+#include "scanpage.h"
+#include "workpage.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,22 +20,9 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    BleDevice *bled;
-
-    bool DoubleClicked;
-
-public slots:
-    void on_deviceScanFinished();
-    void on_device_disconnect();
-
-private slots:
-    void on_pbFind_clicked();
-    void on_pbStart_clicked();
-    void on_pbStop_clicked();
-
-    void on_lwDevList_clicked(QListWidgetItem* listWidgetItem);
-
+    Ui::MainWindow *ui;   
+    ScanPage *scan_page;
+    WorkPage *work_page;
 };
 
 #endif // MAINWINDOW_H
