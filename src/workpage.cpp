@@ -6,6 +6,10 @@ WorkPage::WorkPage(QWidget *parent) :
     ui(new Ui::WorkPage)
 {
     ui->setupUi(this);
+    if (parent != nullptr)
+    {
+        this->resize(parent->size());
+    }
 
     bled = new BleDevice();
     connect(bled, SIGNAL(deviceDisconnected()), this, SLOT(on_device_disconnect()));

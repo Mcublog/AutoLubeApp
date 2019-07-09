@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">*  Scale { origin.x: 0; origin.y: 0; xScale: 0,4; yScale: 0,4; }</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
     <string notr="true"/>

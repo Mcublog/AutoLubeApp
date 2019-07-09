@@ -24,6 +24,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+
+win32-g++{
+    message("Desktop")
+    MY_DEF = "Desktop"
+    DEFINES += "DESKTOP"
+}
+
 SOURCES += \
     src/bledevice.cpp \
     src/main.cpp \

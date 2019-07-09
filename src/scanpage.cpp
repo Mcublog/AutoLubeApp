@@ -10,6 +10,11 @@ ScanPage::ScanPage(QWidget *parent) :
     ui(new Ui::ScanPage)
 {
     ui->setupUi(this);
+    if (parent != nullptr)
+    {
+        this->resize(parent->size());
+    }
+
 
     bled = new BleDevice();
     connect(ui->lwDevList,  SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(on_lwDevList_clicked(QListWidgetItem*)), Qt::UniqueConnection);

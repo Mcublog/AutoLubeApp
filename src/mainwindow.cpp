@@ -8,6 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+#ifdef DESKTOP
+    QSize size =this->size();
+    size.setHeight(700);
+    this->resize(size);
+    this->resize(size);
+#endif
+
     scan_page = new ScanPage(this);
     work_page = new WorkPage(this);
 
