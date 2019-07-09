@@ -15,9 +15,17 @@ ScanPage::ScanPage(QWidget *parent) :
         this->resize(parent->size());
     }
 
-
     bled = new BleDevice();
     connect(ui->lwDevList,  SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(on_lwDevList_clicked(QListWidgetItem*)), Qt::UniqueConnection);
+
+    //ui->lwDevList->item()
+
+#ifdef DESKTOP
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setText("Nordic_UART D4:60:F0:47:14:2E");
+    item->setTextAlignment(Qt::AlignHCenter);
+    ui->lwDevList->addItem(item);
+#endif
 }
 
 ScanPage::~ScanPage()
@@ -43,6 +51,11 @@ void ScanPage::on_deviceScanFinished()
     {
         ui->lwDevList->clear();
         ui->lwDevList->addItems(devlist);
+        for (int i = 0; i < ui->lwDevList->count(); i++)
+        {
+            auto item = ui->lwDevList->item(i);
+            item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+        }
     }
     else //nof found
     {
