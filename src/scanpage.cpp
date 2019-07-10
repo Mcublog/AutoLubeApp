@@ -2,6 +2,7 @@
 #include "ui_scanpage.h"
 
 #include <QDebug>
+#include <QTimer>
 
 #include "bledevice.h"
 
@@ -39,6 +40,7 @@ void ScanPage::on_pbFind_clicked()
     ui->pbFind->setEnabled(false);
     connect(bled, SIGNAL(deviceScanFinished()), this, SLOT(on_deviceScanFinished()));
     bled->startScanning();
+    QTimer::singleShot(8000, this, SLOT(on_deviceScanFinished()));
 }
 
 void ScanPage::on_deviceScanFinished()

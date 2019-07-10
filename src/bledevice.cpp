@@ -34,8 +34,8 @@ void BleDevice::startScanning()
     setDeviceDisconnect();
 //    if (discoveryAgent->isActive())
 //    {
-        discoveryAgent->stop();
-    //}
+//        discoveryAgent->stop();
+//    }
 
     discoveryAgent->setLowEnergyDiscoveryTimeout(5000);
     discoveryAgent->start(QBluetoothDeviceDiscoveryAgent::LowEnergyMethod);
@@ -115,7 +115,16 @@ void BleDevice::setDeviceDisconnect()
 
     if (m_control != nullptr)
     {
-        //m_control->disconnectFromDevice();
+        //disable notifications
+        if (m_notificationDesc.isValid() && m_service)
+        {
+            m_service->writeDescriptor(m_notificationDesc, QByteArray::fromHex("0000"));
+        }
+        else
+        {
+            m_control->disconnectFromDevice();
+
+        }
     }
     delete m_control;
     m_control = nullptr;
@@ -163,10 +172,6 @@ void BleDevice::serviceScanDone()
         devices.pop_back();
     }
 
-//    if (m_control != nullptr)
-//    {
-//        m_control->disconnectFromDevice();
-//    }
     connection =false;
     delete m_control;
     m_control = nullptr;
