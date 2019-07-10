@@ -18,8 +18,6 @@ ScanPage::ScanPage(QWidget *parent) :
     bled = new BleDevice();
     connect(ui->lwDevList,  SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(on_lwDevList_clicked(QListWidgetItem*)), Qt::UniqueConnection);
 
-    //ui->lwDevList->item()
-
 #ifdef DESKTOP
     QListWidgetItem *item = new QListWidgetItem();
     item->setText("Nordic_UART D4:60:F0:47:14:2E");

@@ -58,14 +58,32 @@ QListView::item:selected
 	border-radius: 15px;	
 }</string>
        </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
        <property name="verticalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
+       <property name="autoScroll">
+        <bool>false</bool>
+       </property>
        <property name="spacing">
         <number>20</number>
+       </property>
+       <property name="itemAlignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -89,17 +107,36 @@ QListView::item:selected
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">*{
-background-color: #1cb2d3;
-border-style: outset;
-border-width: 2px;
-border-radius: 50px;
-border-color: beige;
-min-width: 10em;
+      <string notr="true">QPushButton
+{
+	background-color: #1cb2d3;
+	border-style: outset;
+	border-width: 2px;
+	border-radius: 50px;
+	border-color: beige;
+	min-width: 10em;
+    color:#ffffff;
+    font-size:24px;
+}
+
+QPushButton:hover 
+{
+	 background-color: #cad811;
+ }
+
+ QPushButton:pressed 
+{
+	background-color: #FF6A6F;     
+ }
+
+QPushButton:disabled 
+{
+	background-color:#46525a;
+    color:#46525a;
 }</string>
      </property>
      <property name="text">
-      <string>Find</string>
+      <string>FIND</string>
      </property>
     </widget>
    </item>
