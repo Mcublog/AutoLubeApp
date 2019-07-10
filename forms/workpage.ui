@@ -45,10 +45,16 @@
 	border-radius: 30px;
 	margin-top: 0.5em;
 }
-</string>
+
+QGroupBox::title
+ {
+    subcontrol-origin: margin;
+    left: 20px;
+    padding: 0 3px 0 3px;
+}</string>
      </property>
      <property name="title">
-      <string>CONTROL</string>
+      <string>DIRECT CONTROL</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
