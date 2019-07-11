@@ -19,7 +19,6 @@ WorkPage::WorkPage(QWidget *parent) :
 
     ui->pbStart->setEnabled(false);
     ui->pbStop->setEnabled(false);
-    ui->pbDisconnect->setEnabled(false);
 
     connect(ui->pbDisconnect,   SIGNAL(clicked()), this, SLOT(on_pbDisconnect_clicked()));
     connect(ui->pbStart,        SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
@@ -37,8 +36,6 @@ WorkPage::~WorkPage()
 void WorkPage::set_connection(QString *dev_name, QList<QBluetoothDeviceInfo> &devlist)
 {
     bled->setConnect(*dev_name, devlist);
-    ui->pbDisconnect->setEnabled(false);
-    QTimer::singleShot(1000, this, SLOT(on_disable_lock_timer()));
 }
 
 void WorkPage::on_device_connected()
@@ -61,7 +58,6 @@ void WorkPage::on_pbDisconnect_clicked()
 {
     ui->pbStart->setEnabled(false);
     ui->pbStop->setEnabled(false);
-//    ui->pbDisconnect->setEnabled(false);
 
     bled->setDeviceDisconnect();
 }
@@ -76,9 +72,4 @@ void WorkPage::on_pbStop_clicked()
 {
     QByteArray data = "1";
     bled->write_service(data);
-}
-
-void WorkPage::on_disable_lock_timer()
-{
-    ui->pbDisconnect->setEnabled(true);
 }

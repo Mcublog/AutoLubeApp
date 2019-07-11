@@ -123,6 +123,8 @@ void BleDevice::setDeviceDisconnect()
         else
         {
             m_control->disconnectFromDevice();
+            delete m_control;
+            m_control = nullptr;
 
         }
     }
