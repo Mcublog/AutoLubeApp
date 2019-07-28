@@ -15,8 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->resize(size);
 #endif
 
-    scan_page = new ScanPage(this);
-    work_page = new WorkPage(this);
+    bled = new BleDevice();
+
+    scan_page = new ScanPage(this, bled);
+    work_page = new WorkPage(this, bled);
 
     scan_page->setVisible(true);
     work_page->setVisible(false);
@@ -34,6 +36,7 @@ MainWindow::~MainWindow()
 {
     delete scan_page;
     delete work_page;
+    delete bled;
     delete ui;
 }
 

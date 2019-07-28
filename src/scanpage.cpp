@@ -6,7 +6,7 @@
 
 #include "bledevice.h"
 
-ScanPage::ScanPage(QWidget *parent) :
+ScanPage::ScanPage(QWidget *parent, BleDevice *bled) :
     QWidget(parent),
     ui(new Ui::ScanPage)
 {
@@ -16,7 +16,7 @@ ScanPage::ScanPage(QWidget *parent) :
         this->resize(parent->size());
     }
 
-    bled = new BleDevice();
+    ScanPage::bled = bled;
     connect(ui->lwDevList,  SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(on_lwDevList_clicked(QListWidgetItem*)), Qt::UniqueConnection);
 
 #ifdef DESKTOP
@@ -29,7 +29,6 @@ ScanPage::ScanPage(QWidget *parent) :
 
 ScanPage::~ScanPage()
 {
-    delete bled;
     delete ui;
 }
 

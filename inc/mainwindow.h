@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QListWidget>
 
+#include "bledevice.h"
 #include "scanpage.h"
 #include "workpage.h"
 
@@ -21,6 +22,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    BleDevice *bled;
 
     ScanPage *scan_page;
     WorkPage *work_page;

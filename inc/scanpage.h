@@ -15,7 +15,7 @@ class ScanPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit ScanPage(QWidget *parent = nullptr);
+    explicit ScanPage(QWidget *parent = nullptr, BleDevice *bled = nullptr);
     ~ScanPage();
 
 signals:

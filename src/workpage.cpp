@@ -3,7 +3,7 @@
 
 #include <QTimer>
 
-WorkPage::WorkPage(QWidget *parent) :
+WorkPage::WorkPage(QWidget *parent, BleDevice *bled) :
     QWidget(parent),
     ui(new Ui::WorkPage)
 {
@@ -13,7 +13,7 @@ WorkPage::WorkPage(QWidget *parent) :
         this->resize(parent->size());
     }
 
-    bled = new BleDevice();
+    WorkPage::bled = bled;
     connect(bled, SIGNAL(deviceDisconnected()), this, SLOT(on_device_disconnect()));
     connect(bled, SIGNAL(deviceConnected()),    this, SLOT(on_device_connected()));
 
@@ -29,7 +29,6 @@ WorkPage::WorkPage(QWidget *parent) :
 
 WorkPage::~WorkPage()
 {
-    delete bled;
     delete ui;
 }
 

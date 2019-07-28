@@ -14,7 +14,7 @@ class WorkPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit WorkPage(QWidget *parent = nullptr);
+    explicit WorkPage(QWidget *parent = nullptr, BleDevice *bled = nullptr);
     ~WorkPage();
 
     void set_connection(QString *dev_name, QList <QBluetoothDeviceInfo> &devlist);
