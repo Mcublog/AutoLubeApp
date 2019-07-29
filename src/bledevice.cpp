@@ -56,21 +56,24 @@ void BleDevice::addDevice(const QBluetoothDeviceInfo &info)
         qDebug() << "rssi: "<< devices.last().rssi() << " " << devices.last().address().toString();
         qDebug() << devices.last().serviceUuids();
 
-        m_control = QLowEnergyController::createCentral(devices.last());
-        m_control->setRemoteAddressType(QLowEnergyController::PublicAddress);
+        if (devices.count())
+        {
+            m_control = QLowEnergyController::createCentral(devices.last());
+            m_control->setRemoteAddressType(QLowEnergyController::PublicAddress);
 
-        connect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
-        connect(m_control, &QLowEnergyController::discoveryFinished, this, &BleDevice::serviceScanDone);
+            connect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
+            connect(m_control, &QLowEnergyController::discoveryFinished, this, &BleDevice::serviceScanDone);
 
-        connect(m_control, &QLowEnergyController::connected, this, [this]() {
-            qDebug() << "Controller connected. Search services...";
-            m_control->discoverServices();
-        });
+            connect(m_control, &QLowEnergyController::connected, this, [this]() {
+                qDebug() << "Controller connected. Search services...";
+                m_control->discoverServices();
+            });
 
-        connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
+            connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
 
-        // Connect
-        m_control->connectToDevice();
+            // Connect
+            m_control->connectToDevice();
+        }
     }
 }
 
@@ -127,6 +130,10 @@ void BleDevice::setDeviceDisconnect()
 //            m_control = nullptr;
 //        }
 //    }
+    disconnect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
+    disconnect(m_control, &QLowEnergyController::discoveryFinished, this, &BleDevice::serviceScanDone);
+
+    connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
     delete m_control;
     m_control = nullptr;
     m_foundUART = false;

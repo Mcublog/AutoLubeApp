@@ -56,10 +56,6 @@ void ScanPage::on_deviceScanFinished()
             item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
         }
     }
-    else //nof found
-    {
-        bled->setDeviceDisconnect();
-    }
     ui->pbFind->setEnabled(true);
 }
 
