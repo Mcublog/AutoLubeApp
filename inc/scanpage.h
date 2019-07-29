@@ -29,6 +29,8 @@ private slots:
     void on_pbFind_clicked();
     void on_deviceScanFinished();
     void on_lwDevList_clicked(QListWidgetItem* listWidgetItem);
+
+public slots:
     void on_device_disconnect();
 };
 

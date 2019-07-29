@@ -113,21 +113,20 @@ void BleDevice::setDeviceDisconnect()
         devices.clear();
     }
 
-    if (m_control != nullptr)
-    {
-        //disable notifications
-        if (m_notificationDesc.isValid() && m_service)
-        {
-            m_service->writeDescriptor(m_notificationDesc, QByteArray::fromHex("0000"));
-        }
-        else
-        {
-            m_control->disconnectFromDevice();
-            delete m_control;
-            m_control = nullptr;
-
-        }
-    }
+//    if (m_control != nullptr)
+//    {
+//        //disable notifications
+//        if (m_notificationDesc.isValid() && m_service)
+//        {
+//            m_service->writeDescriptor(m_notificationDesc, QByteArray::fromHex("0000"));
+//        }
+//        else
+//        {
+//            m_control->disconnectFromDevice();
+//            delete m_control;
+//            m_control = nullptr;
+//        }
+//    }
     delete m_control;
     m_control = nullptr;
     m_foundUART = false;

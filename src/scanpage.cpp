@@ -76,6 +76,5 @@ void ScanPage::on_lwDevList_clicked(QListWidgetItem* listWidgetItem)
 void ScanPage::on_device_disconnect()
 {
     qDebug() << "on_device_disconnect";
-    ui->pbFind->setEnabled(true);
     ui->lwDevList->clear();
 }

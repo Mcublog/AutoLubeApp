@@ -28,8 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
             Qt::ConnectionType::UniqueConnection);
 
     connect(work_page, SIGNAL(disconnected()),
-            this,      SLOT(on_work_page_disconnected()),
-            Qt::ConnectionType::UniqueConnection);
+            this,      SLOT(on_work_page_disconnected()));
+
+    connect(work_page, SIGNAL(disconnected()),
+            scan_page, SLOT(on_device_disconnect()));
 }
 
 MainWindow::~MainWindow()

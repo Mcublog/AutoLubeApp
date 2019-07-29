@@ -1,8 +1,6 @@
 #include "workpage.h"
 #include "ui_workpage.h"
 
-#include <QTimer>
-
 WorkPage::WorkPage(QWidget *parent, BleDevice *bled) :
     QWidget(parent),
     ui(new Ui::WorkPage)

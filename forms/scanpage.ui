@@ -56,6 +56,11 @@ QListView::item:selected
 {
 	background-color: #cad811;
 	border-radius: 15px;	
+}
+
+QListView::item:!selected 
+{
+	border-radius: 15px;	
 }</string>
        </property>
        <property name="frameShape">
