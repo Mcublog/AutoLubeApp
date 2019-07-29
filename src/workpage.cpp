@@ -1,6 +1,8 @@
 #include "workpage.h"
 #include "ui_workpage.h"
 
+#include <QTimer>
+
 WorkPage::WorkPage(QWidget *parent, BleDevice *bled) :
     QWidget(parent),
     ui(new Ui::WorkPage)
@@ -21,8 +23,6 @@ WorkPage::WorkPage(QWidget *parent, BleDevice *bled) :
     connect(ui->pbDisconnect,   SIGNAL(clicked()), this, SLOT(on_pbDisconnect_clicked()));
     connect(ui->pbStart,        SIGNAL(clicked()), this, SLOT(on_pbStart_clicked));
     connect(ui->pbStop,         SIGNAL(clicked()), this, SLOT(on_pbStop_clicked));
-
-
 }
 
 WorkPage::~WorkPage()
@@ -33,11 +33,14 @@ WorkPage::~WorkPage()
 void WorkPage::set_connection(QString *dev_name, QList<QBluetoothDeviceInfo> &devlist)
 {
     bled->setConnect(*dev_name, devlist);
+    ui->pbDisconnect->setEnabled(false);
+    QTimer::singleShot(5000, this, SLOT(on_timer_timeout()));
 }
 
 void WorkPage::on_device_connected()
 {
     qDebug() << "on_device_connected()()";
+    ui->pbDisconnect->setEnabled(true);
     ui->pbStart->setEnabled(true);
     ui->pbStop->setEnabled(true);
 }
@@ -70,3 +73,9 @@ void WorkPage::on_pbStop_clicked()
     QByteArray data = "1";
     bled->write_service(data);
 }
+
+void WorkPage::on_timer_timeout()
+{
+    ui->pbDisconnect->setEnabled(true);
+}
+

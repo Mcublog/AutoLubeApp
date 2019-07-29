@@ -226,6 +226,7 @@ QPushButton:hover
 QPushButton:disabled 
 {
 	background-color:#46525a;
+    color:#46525a;
 }</string>
        </property>
        <property name="text">

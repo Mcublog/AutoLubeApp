@@ -32,6 +32,7 @@ private slots:
     void on_pbStop_clicked();
     void on_device_connected();
     void on_device_disconnect();
+    void on_timer_timeout();
 };
 
 #endif // WORKPAGE_H
