@@ -132,8 +132,8 @@ void BleDevice::setDeviceDisconnect()
 //    }
     disconnect(m_control, &QLowEnergyController::serviceDiscovered, this, &BleDevice::serviceDiscovered);
     disconnect(m_control, &QLowEnergyController::discoveryFinished, this, &BleDevice::serviceScanDone);
+    disconnect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
 
-    connect(m_control, &QLowEnergyController::disconnected, this, &BleDevice::setDeviceDisconnect);
     delete m_control;
     m_control = nullptr;
     m_foundUART = false;
