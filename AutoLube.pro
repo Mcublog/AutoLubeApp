@@ -24,6 +24,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+# bug workaround https://bugreports.qt.io/browse/QTBUG-76293
+android {
+    QMAKE_LFLAGS += -nostdlib++
+}
 
 win32-g++{
     message("Desktop")
